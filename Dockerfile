@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-MAINTAINER Decheng Zhang <killercentury@gmail.com>
+MAINTAINER Pasha Katsev <pkatsev@gmail.com>
 
 # Let's start with some basic stuff.
 RUN apt-get update -qq && apt-get install -qqy \
@@ -8,7 +8,8 @@ RUN apt-get update -qq && apt-get install -qqy \
     ca-certificates \
     curl \
     lxc \
-    iptables
+    iptables \
+    git
 
 # Install Docker from Docker Inc. repositories.
 RUN curl -sSL https://get.docker.com/ | sh
