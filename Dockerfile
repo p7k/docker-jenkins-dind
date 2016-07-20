@@ -38,6 +38,7 @@ RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE
 RUN chmod +x /usr/local/bin/docker-compose
 
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+ADD crontab /etc/cron.d/crontab
 
 EXPOSE 8080
 
