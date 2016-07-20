@@ -1,6 +1,6 @@
 FROM ubuntu:14.04
 
-MAINTAINER Pasha Katsev <pkatsev@gmail.com>
+MAINTAINER Marcelo Almeida <ms.almeida86@gmail.com>
 
 # Let's start with some basic stuff.
 RUN apt-get update -qq && apt-get install -qqy \
