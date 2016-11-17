@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM debian:jessie-backports
 
 MAINTAINER Marcelo Almeida <ms.almeida86@gmail.com>
 
@@ -9,13 +9,21 @@ RUN apt-get update -qq && apt-get install -qqy \
     curl \
     lxc \
     iptables \
-    git
+    git \
+    zip \
+    supervisor \
+    default-jre-headless && \
+    wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add - && \
+    sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list' && \
+    apt-get update && apt-get install -y jenkins && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Docker from Docker Inc. repositories.
 RUN curl -sSL https://get.docker.com/ | sh
 
 # Install the wrapper script from https://raw.githubusercontent.com/docker/docker/master/hack/dind.
-ADD ./dind /usr/local/bin/dind
+ADD https://raw.githubusercontent.com/docker/docker/master/hack/dind /usr/local/bin/dind
 RUN chmod +x /usr/local/bin/dind
 
 ADD ./wrapdocker /usr/local/bin/wrapdocker
@@ -24,18 +32,15 @@ RUN chmod +x /usr/local/bin/wrapdocker
 # Define additional metadata for our image.
 VOLUME /var/lib/docker
 
-ENV DOCKER_COMPOSE_VERSION 1.7.0
+ENV \
+  JENKINS_HOME="/var/lib/jenkins" \
+  GIT_TIMEOUT="60"
 
-RUN wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add -
-RUN sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
-RUN apt-get update && apt-get install -y zip supervisor jenkins && rm -rf /var/lib/apt/lists/*
-RUN usermod -a -G docker jenkins
-ENV JENKINS_HOME /var/lib/jenkins
-VOLUME /var/lib/jenkins
-
-# Install Docker Compose
-RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-RUN chmod +x /usr/local/bin/docker-compose
+RUN \
+  mkdir ${JENKINS_HOME} && \
+  useradd jenkins --home-dir ${JENKINS_HOME} && \
+  chown jenkins:jenkins ${JENKINS_HOME} && \
+  usermod -a -G docker jenkins
 
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD crontab /etc/cron.d/crontab
