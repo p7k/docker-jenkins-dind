@@ -37,9 +37,6 @@ ENV \
   GIT_TIMEOUT="60"
 
 RUN \
-  mkdir ${JENKINS_HOME} && \
-  useradd jenkins --home-dir ${JENKINS_HOME} && \
-  chown jenkins:jenkins ${JENKINS_HOME} && \
   usermod -a -G docker jenkins
 
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
