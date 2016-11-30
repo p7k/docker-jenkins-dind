@@ -35,7 +35,9 @@ VOLUME /var/lib/docker
 
 ENV \
   JENKINS_HOME="/var/lib/jenkins" \
-  GIT_TIMEOUT="60"
+  GIT_TIMEOUT="60" \
+  MAX_HEAP_SIZE="512m" \
+  MAX_PERM_SIZE="2048m"
 
 RUN \
   usermod -a -G docker jenkins
