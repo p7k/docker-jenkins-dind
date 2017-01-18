@@ -6,7 +6,6 @@ MAINTAINER Marcelo Almeida <ms.almeida86@gmail.com>
 RUN apt-get update -qq && apt-get install -qqy \
     apt-transport-https \
     ca-certificates \
-    cron \
     curl \
     lxc \
     iptables \
@@ -43,7 +42,6 @@ RUN \
   usermod -a -G docker jenkins
 
 ADD supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-ADD crontab /etc/cron.d/crontab
 
 EXPOSE 8080
 
